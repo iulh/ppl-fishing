@@ -1,7 +1,8 @@
 'use client';
 
 import { GameState } from '@/lib/fishing/types';
-import styles from '@/styles/fishing/fishing.module.css';
+import ReactCSSTransition from '@/components/CSSTransition';
+import styles from '@/styles/fishing/EscapedPopup.module.css';
 
 interface Props {
     gameState: GameState;
@@ -9,18 +10,24 @@ interface Props {
 }
 
 export default function EscapedPopup({ gameState, onClick }: Props) {
-    if (gameState !== GameState.ESCAPED) return null;
-
     return (
-        <div className={styles.escapedOverlay} onClick={onClick}>
-            <div className={styles.escapedCard}>
-                <span className={styles.lootEmoji}>💨</span>
-                <div className={styles.lootName}>Сорвалась!</div>
-                <div className={styles.lootDesc} style={{ color: '#aaa' }}>
-                    Рыба ушла... Попробуйте ещё раз!
+        <ReactCSSTransition
+            state={gameState === GameState.ESCAPED}
+            timeout={300}
+            classNames={{
+                exitActive: styles.hide
+            }}
+        >
+            <div className={styles.escapedOverlay} onClick={onClick}>
+                <div className={styles.escapedCard}>
+                    <span className={styles.lootEmoji}>💨</span>
+                    <div className={styles.lootName}>Сорвалась!</div>
+                    <div className={styles.lootDesc} style={{ color: '#aaa' }}>
+                        Рыба ушла... Попробуйте ещё раз!
+                    </div>
+                    <div className={styles.lootHint}>Нажмите для продолжения</div>
                 </div>
-                <div className={styles.lootHint}>Нажмите для продолжения</div>
             </div>
-        </div>
+        </ReactCSSTransition>
     );
 }

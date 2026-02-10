@@ -1,76 +1,25 @@
-.container {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #0b1a2e;
-    padding: 0;
-    box-sizing: border-box;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.canvasWrap {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    max-width: 100%;
-}
-
-.canvasWrap canvas {
-    display: block;
-}
-
-/* ── Inventory toggle button ── */
-.invBtn {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-size: 22px;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    transition: background 0.2s;
-}
-
-.invBtn:hover {
-    background: rgba(0, 0, 0, 0.75);
-}
-
 /* ── Inventory panel ── */
 .invPanel {
     position: absolute;
-    top: 60px;
+    top: 0;
     right: 0;
     width: 280px;
-    height: calc(100% - 60px);
+    height: 100%;
     background: rgba(10, 20, 40, 0.92);
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px 0 0 0;
+
     backdrop-filter: blur(12px);
     z-index: 10;
     display: flex;
     flex-direction: column;
-    transform: translateX(100%);
-    transition: transform 0.3s ease;
     overflow: hidden;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
 }
 
-.invPanel.open {
-    transform: translateX(0);
+.invPanel.hide {
+    transform: translateX(100%);
 }
 
 .invHeader {
@@ -354,173 +303,14 @@
     padding: 24px;
 }
 
-/* ── Loot popup ── */
-.lootOverlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.4);
-    animation: fadeIn 0.3s ease;
-}
-
-.lootCard {
-    background: rgba(15, 25, 50, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 16px;
-    padding: 32px 40px;
-    text-align: center;
-    backdrop-filter: blur(16px);
-    animation: popIn 0.3s ease;
-    max-width: 320px;
-}
-
-.lootEmoji {
-    font-size: 56px;
-    margin-bottom: 12px;
-    display: block;
-}
-
-.lootName {
-    font-size: 22px;
-    font-weight: 700;
-    margin-bottom: 6px;
-}
-
-.lootRarity {
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 10px;
-}
-
-.lootDesc {
-    font-size: 14px;
-    color: #aab;
-    margin-bottom: 10px;
-    line-height: 1.5;
-}
-
-.lootWeight {
-    font-size: 13px;
-    color: #8899aa;
-    margin-bottom: 10px;
-}
-
-.lootPrice {
-    font-size: 13px;
-    color: #f4d03f;
-    margin-bottom: 10px;
-}
-
-.lootHint {
-    font-size: 12px;
-    color: #556;
-}
-
-/* ── Escaped popup ── */
-.escapedOverlay {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.3);
-    animation: fadeIn 0.3s ease;
-}
-
-.escapedCard {
-    background: rgba(30, 10, 10, 0.9);
-    border: 1px solid rgba(231, 76, 60, 0.3);
-    border-radius: 16px;
-    padding: 28px 36px;
-    text-align: center;
-    backdrop-filter: blur(16px);
-    animation: popIn 0.3s ease;
-}
-
-.escapedCard .lootEmoji {
-    font-size: 48px;
-}
-
-.escapedCard .lootName {
-    color: #e74c3c;
-    font-size: 20px;
-}
-
-.escapedCard .lootHint {
-    color: #665;
-}
-
-/* ── Sound toggle ── */
-/* css-lint-disable-rule unused-class*/
-.soundBtn {
-    position: absolute;
-    top: 72px;
-    right: 60px;
-    background: rgba(0, 0, 0, 0.55);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-size: 18px;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 5;
-    transition: background 0.2s;
-}
-
-/* css-lint-disable-rule unused-class*/
-.soundBtn:hover {
-    background: rgba(0, 0, 0, 0.75);
-}
-
-/* ── Animations ── */
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes popIn {
-    from {
-        opacity: 0;
-        transform: scale(0.85);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
 /* ── Responsive ── */
 
 @media (max-width: 700px) {
-    .container {
-        padding: 10px;
-    }
-
     .invPanel {
         width: 220px;
     }
 
     .invGrid {
         grid-template-columns: repeat(3, 1fr);
-    }
-
-    .lootCard {
-        padding: 24px 20px;
     }
 }

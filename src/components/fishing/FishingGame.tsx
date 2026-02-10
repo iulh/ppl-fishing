@@ -21,7 +21,7 @@ import { ROD_UPGRADES } from '@/lib/fishing/constants';
 import Inventory from './Inventory';
 import LootPopup from './LootPopup';
 import EscapedPopup from './EscapedPopup';
-import styles from '@/styles/fishing/fishing.module.css';
+import styles from '@/styles/fishing/FishingGame.module.css';
 
 const CANVAS_W = 1000;
 const CANVAS_H = 580;
@@ -300,11 +300,13 @@ export default function FishingGame() {
                     ref={canvasRef}
                     onMouseDown={e => {
                         e.preventDefault();
+                        setInvOpen(false);
                         onDown();
                     }}
                     onMouseUp={onUp}
                     onTouchStart={e => {
                         e.preventDefault();
+                        setInvOpen(false);
                         onDown();
                     }}
                     onTouchEnd={onUp}
@@ -332,9 +334,10 @@ export default function FishingGame() {
                 />
 
                 {/* Loot popup */}
-                {displayState === GameState.CAUGHT && lastCatch && (
-                    <LootPopup caught={lastCatch} onClick={onTap} />
-                )}
+                <LootPopup
+                    caught={displayState === GameState.CAUGHT ? lastCatch : null}
+                    onClick={onTap}
+                />
 
                 {/* Escaped popup */}
                 <EscapedPopup gameState={displayState} onClick={onTap} />

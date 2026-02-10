@@ -1,0 +1,58 @@
+/* ── Escaped popup ── */
+.escapedOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.3);
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+
+.escapedCard {
+    background: rgba(30, 10, 10, 0.9);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 16px;
+    padding: 28px 36px;
+    text-align: center;
+    backdrop-filter: blur(16px);
+    opacity: 1;
+    transform: scale(1);
+    transition: opacity 0.3s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.escapedOverlay.hide {
+    opacity: 0;
+}
+
+.escapedOverlay.hide .escapedCard {
+    opacity: 0;
+    transform: scale(0.85);
+}
+
+.lootEmoji {
+    font-size: 48px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.lootName {
+    color: #e74c3c;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.lootDesc {
+    font-size: 14px;
+    color: #aab;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.lootHint {
+    font-size: 12px;
+    color: #665;
+}

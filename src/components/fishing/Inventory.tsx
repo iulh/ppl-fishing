@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { InventoryEntry, PlayerData } from '@/lib/fishing/types';
 import {
     RARITY_COLORS,
@@ -7,7 +8,8 @@ import {
     RARITY_BG,
     ROD_UPGRADES
 } from '@/lib/fishing/constants';
-import styles from '@/styles/fishing/fishing.module.css';
+import ReactCSSTransition from '@/components/CSSTransition';
+import styles from '@/styles/fishing/Inventory.module.css';
 
 interface Props {
     open: boolean;
@@ -18,8 +20,6 @@ interface Props {
     onSell: (itemId: string, count: number) => void;
     onUpgradeRod: () => void;
 }
-
-import { useState } from 'react';
 
 export default function Inventory({
     open,
@@ -42,26 +42,33 @@ export default function Inventory({
     const nextRod = ROD_UPGRADES[playerData.rodLevel + 1] ?? null;
 
     return (
-        <div className={`${styles.invPanel} ${open ? styles.open : ''}`}>
-            <div className={styles.invHeader}>
-                <div className={styles.invTabs}>
-                    <button
-                        className={`${styles.invTab} ${tab === 'inv' ? styles.invTabActive : ''}`}
-                        onClick={() => setTab('inv')}
-                    >
-                        📦 Улов
-                    </button>
-                    <button
-                        className={`${styles.invTab} ${tab === 'rod' ? styles.invTabActive : ''}`}
-                        onClick={() => setTab('rod')}
-                    >
-                        🎣 Удочка
+        <ReactCSSTransition
+            state={open}
+            timeout={300}
+            classNames={{
+                exitActive: styles.hide
+            }}
+        >
+            <div className={styles.invPanel}>
+                <div className={styles.invHeader}>
+                    <div className={styles.invTabs}>
+                        <button
+                            className={`${styles.invTab} ${tab === 'inv' ? styles.invTabActive : ''}`}
+                            onClick={() => setTab('inv')}
+                        >
+                            📦 Улов
+                        </button>
+                        <button
+                            className={`${styles.invTab} ${tab === 'rod' ? styles.invTabActive : ''}`}
+                            onClick={() => setTab('rod')}
+                        >
+                            🎣 Удочка
+                        </button>
+                    </div>
+                    <button className={styles.invCloseBtn} onClick={onClose}>
+                        ✕
                     </button>
                 </div>
-                <button className={styles.invCloseBtn} onClick={onClose}>
-                    ✕
-                </button>
-            </div>
 
             {/* Coins bar */}
             <div className={styles.coinsBar}>💰 {playerData.coins} монет</div>
@@ -214,6 +221,7 @@ export default function Inventory({
                     )}
                 </div>
             )}
-        </div>
+            </div>
+        </ReactCSSTransition>
     );
 }
