@@ -174,6 +174,7 @@ export interface FullGameState {
 
     fishResistTimer: number;
     fishPulling: boolean;
+    reelStartX: number;
 
     totalCatches: number;
     totalEscapes: number;

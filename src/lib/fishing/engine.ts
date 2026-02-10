@@ -130,6 +130,7 @@ export function createInitialState(cw: number, ch: number): FullGameState {
 
         fishResistTimer: 0,
         fishPulling: false,
+        reelStartX: 0,
 
         totalCatches: 0,
         totalEscapes: 0,
@@ -331,6 +332,7 @@ function stBite(s: FullGameState, inp: InputState, dt: number): FullGameState {
             reelProgress: 0,
             fishResistTimer: 0,
             fishPulling: false,
+            reelStartX: bob.position.x,
             tooltipText: TOOLTIP_MESSAGES.reeling
         };
     }
@@ -384,11 +386,12 @@ function stReeling(s: FullGameState, inp: InputState, dt: number): FullGameState
     if (reeling && Math.random() < 0.3) soundManager.playReelClick();
 
     const pr = reel / 100;
-    const tx = s.boatX + 60 - (s.boatX + 60 - s.bobber.position.x) * (1 - pr);
+    const endX = s.boatX + 60;
+
     const bob = {
         ...s.bobber,
         position: {
-            x: s.bobber.position.x + (tx - s.bobber.position.x) * dt * 2,
+            x: s.reelStartX + (endX - s.reelStartX) * pr,
             y: s.waterLevel + Math.sin(s.time * 3) * (fp ? 6 : 2) - pr * 10
         }
     };

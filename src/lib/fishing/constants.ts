@@ -110,6 +110,16 @@ export const LOOT_TABLE: LootItem[] = [
         resistance: 0.1,
         price: 2
     },
+    {
+        id: 'pasta',
+        name: 'Макароны',
+        description: 'Упаковка макарон из магазина "Макфа". Видимо, кто-то уронил.',
+        rarity: Rarity.COMMON,
+        emoji: '🍝',
+        isFish: false,
+        resistance: 0.08,
+        price: 2
+    },
 
     // Uncommon
     {
