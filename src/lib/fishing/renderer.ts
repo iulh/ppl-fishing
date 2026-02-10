@@ -662,7 +662,7 @@ function drawRodAndLine(
         const cpx = (tipX + bpx) / 2;
         const sag =
             bobState === GameState.REELING
-                ? 20 + s.tension * 0.3
+                ? Math.max(5, 35 - s.tension * 0.28)
                 : bobState === GameState.BITE
                   ? 15
                   : 30;
