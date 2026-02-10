@@ -1,0 +1,526 @@
+.container {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0b1a2e;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.canvasWrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.canvasWrap canvas {
+    display: block;
+}
+
+/* ── Inventory toggle button ── */
+.invBtn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 22px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: background 0.2s;
+}
+
+.invBtn:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* ── Inventory panel ── */
+.invPanel {
+    position: absolute;
+    top: 60px;
+    right: 0;
+    width: 280px;
+    height: calc(100% - 60px);
+    background: rgba(10, 20, 40, 0.92);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px 0 0 0;
+    backdrop-filter: blur(12px);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.invPanel.open {
+    transform: translateX(0);
+}
+
+.invHeader {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.invTabs {
+    display: flex;
+    gap: 4px;
+}
+
+.invTab {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: #aab;
+    font-size: 12px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.invTab:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.invTabActive {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+.invHeader h3 {
+    margin: 0;
+    color: #fff;
+    font-size: 16px;
+}
+
+.invCloseBtn {
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+.invCloseBtn:hover {
+    color: #fff;
+}
+
+.invGrid {
+    padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    overflow-y: auto;
+    flex: 1;
+    align-content: flex-start;
+}
+
+.invItem {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.invItem:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.invCount {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0 4px;
+    border-radius: 4px;
+    line-height: 1.4;
+}
+
+.invEmpty {
+    padding: 24px 16px;
+    text-align: center;
+    color: #667;
+    font-size: 14px;
+}
+
+/* ── Item detail tooltip inside inventory ── */
+.itemDetail {
+    padding: 14px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.itemDetailName {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.itemDetailRarity {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+.itemDetailDesc {
+    font-size: 12px;
+    color: #aab;
+    line-height: 1.4;
+}
+
+.itemDetailWeight {
+    font-size: 12px;
+    color: #8899aa;
+    margin-top: 4px;
+}
+
+/* ── Coins bar ── */
+.coinsBar {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #f4d03f;
+    background: rgba(244, 208, 63, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    font-weight: 600;
+}
+
+/* ── Sell row ── */
+.sellRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.sellPrice {
+    font-size: 12px;
+    color: #f4d03f;
+}
+
+.sellBtn,
+.sellAllBtn {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.sellBtn {
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+}
+
+.sellBtn:hover {
+    background: rgba(46, 204, 113, 0.35);
+}
+
+.sellAllBtn {
+    background: rgba(241, 196, 15, 0.2);
+    color: #f1c40f;
+}
+
+.sellAllBtn:hover {
+    background: rgba(241, 196, 15, 0.35);
+}
+
+/* ── Selected item highlight ── */
+.invItemSelected {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: -1px;
+}
+
+/* ── Rod upgrade panel ── */
+.rodPanel {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.rodCurrent {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rodName {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.rodDesc {
+    font-size: 12px;
+    color: #aab;
+    line-height: 1.4;
+    margin-bottom: 4px;
+}
+
+.rodStat {
+    font-size: 12px;
+    color: #2ecc71;
+    margin-top: 2px;
+}
+
+.rodUpgrade {
+    background: rgba(255, 200, 0, 0.06);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid rgba(255, 200, 0, 0.15);
+}
+
+.rodUpgradeTitle {
+    font-size: 11px;
+    color: #889;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+.upgradeBtn {
+    margin-top: 10px;
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    background: rgba(46, 204, 113, 0.2);
+    color: #2ecc71;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.upgradeBtn:hover:not(:disabled) {
+    background: rgba(46, 204, 113, 0.35);
+}
+
+.upgradeBtnDisabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.rodHint {
+    font-size: 11px;
+    color: #e74c3c;
+    margin-top: 6px;
+    text-align: center;
+}
+
+.rodMaxed {
+    text-align: center;
+    color: #f4d03f;
+    font-size: 14px;
+    padding: 24px;
+}
+
+/* ── Loot popup ── */
+.lootOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.4);
+    animation: fadeIn 0.3s ease;
+}
+
+.lootCard {
+    background: rgba(15, 25, 50, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 32px 40px;
+    text-align: center;
+    backdrop-filter: blur(16px);
+    animation: popIn 0.3s ease;
+    max-width: 320px;
+}
+
+.lootEmoji {
+    font-size: 56px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.lootName {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.lootRarity {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.lootDesc {
+    font-size: 14px;
+    color: #aab;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.lootWeight {
+    font-size: 13px;
+    color: #8899aa;
+    margin-bottom: 10px;
+}
+
+.lootPrice {
+    font-size: 13px;
+    color: #f4d03f;
+    margin-bottom: 10px;
+}
+
+.lootHint {
+    font-size: 12px;
+    color: #556;
+}
+
+/* ── Escaped popup ── */
+.escapedOverlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.3);
+    animation: fadeIn 0.3s ease;
+}
+
+.escapedCard {
+    background: rgba(30, 10, 10, 0.9);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    border-radius: 16px;
+    padding: 28px 36px;
+    text-align: center;
+    backdrop-filter: blur(16px);
+    animation: popIn 0.3s ease;
+}
+
+.escapedCard .lootEmoji {
+    font-size: 48px;
+}
+
+.escapedCard .lootName {
+    color: #e74c3c;
+    font-size: 20px;
+}
+
+.escapedCard .lootHint {
+    color: #665;
+}
+
+/* ── Sound toggle ── */
+/* css-lint-disable-rule unused-class*/
+.soundBtn {
+    position: absolute;
+    top: 72px;
+    right: 60px;
+    background: rgba(0, 0, 0, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    transition: background 0.2s;
+}
+
+/* css-lint-disable-rule unused-class*/
+.soundBtn:hover {
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* ── Animations ── */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.85);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 700px) {
+    .container {
+        padding: 10px;
+    }
+
+    .invPanel {
+        width: 220px;
+    }
+
+    .invGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .lootCard {
+        padding: 24px 20px;
+    }
+}
