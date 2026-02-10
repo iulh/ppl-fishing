@@ -384,47 +384,13 @@ function drawPlayer(
 ): void {
     const bob = Math.sin(s.time * 1.2) * 2;
     const rot = Math.sin(s.time * 0.8) * 0.015;
-    const by = wl - 12 + bob;
+    const by = wl - 12 + bob + 8;
     const idle = Math.sin(s.playerIdlePhase * 1.5) * 1;
     const breathe = Math.sin(s.time * 2) * 0.5;
 
     ctx.save();
     ctx.translate(bx, by);
     ctx.rotate(rot);
-
-    /* ── Legs (sitting, bent at knees — black trousers) ── */
-    ctx.strokeStyle = '#1a1a1a';
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round';
-    /* left thigh → knee */
-    ctx.beginPath();
-    ctx.moveTo(-6, -2);
-    ctx.lineTo(-14, 6);
-    ctx.stroke();
-    /* left shin → foot */
-    ctx.beginPath();
-    ctx.moveTo(-14, 6);
-    ctx.lineTo(-10, 14);
-    ctx.stroke();
-    /* right thigh → knee */
-    ctx.beginPath();
-    ctx.moveTo(4, -2);
-    ctx.lineTo(12, 6);
-    ctx.stroke();
-    /* right shin → foot */
-    ctx.beginPath();
-    ctx.moveTo(12, 6);
-    ctx.lineTo(16, 14);
-    ctx.stroke();
-
-    /* ── Shoes (polished black) ── */
-    ctx.fillStyle = '#111';
-    ctx.beginPath();
-    ctx.ellipse(-10, 15, 5, 3, -0.2, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.beginPath();
-    ctx.ellipse(16, 15, 5, 3, 0.2, 0, Math.PI * 2);
-    ctx.fill();
 
     /* ── Torso (black tuxedo) ── */
     ctx.fillStyle = '#1a1a1a';
@@ -577,7 +543,7 @@ function drawRodAndLine(
 ): void {
     const bob = Math.sin(s.time * 1.2) * 2;
     const rot = Math.sin(s.time * 0.8) * 0.015;
-    const by = wl - 12 + bob;
+    const by = wl - 12 + bob + 8;
     const breathe = Math.sin(s.time * 2) * 0.5;
 
     /* Compute hand position to match drawPlayer arm */
