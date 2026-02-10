@@ -320,8 +320,7 @@ export default function FishingGame() {
                         .catch(err => {
                             console.error('Failed to send fisherman badge achievement:', err);
                         });
-                } else if (caughtItem.isFish) {
-                    // Increment catch counter only for fish (not badge, not trash)
+                } else {
                     setPlayerData(pd => {
                         const newCount = pd.catchesWithoutBadge + 1;
                         console.log(`🐟 Fish caught! Progress: ${newCount}/50`);

@@ -841,8 +841,7 @@ function drawHUD(
     /* stats */
     ctx.save();
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    const statsHeight = playerData && !playerData.hasBadge ? 70 : 50;
-    roundRect(ctx, 10, 10, 180, statsHeight, 8);
+    roundRect(ctx, 10, 10, 180, 50, 8);
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.font = '13px sans-serif';
