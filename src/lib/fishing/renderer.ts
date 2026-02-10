@@ -9,7 +9,8 @@ export function render(
     ctx: CanvasRenderingContext2D,
     s: FullGameState,
     w: number,
-    h: number
+    h: number,
+    playerData?: { catchesWithoutBadge: number; hasBadge: boolean }
 ): void {
     ctx.clearRect(0, 0, w, h);
     const wl = s.waterLevel;
@@ -28,7 +29,7 @@ export function render(
     drawRodAndLine(ctx, s, wl);
     drawBobber(ctx, s);
     drawSplashParticles(ctx, s);
-    drawHUD(ctx, s, w, h);
+    drawHUD(ctx, s, w, h, playerData);
 }
 
 /* ────────────────────────────
@@ -727,7 +728,8 @@ function drawHUD(
     ctx: CanvasRenderingContext2D,
     s: FullGameState,
     w: number,
-    h: number
+    h: number,
+    playerData?: { catchesWithoutBadge: number; hasBadge: boolean }
 ): void {
     /* cast power bar */
     if (s.gameState === GameState.CASTING) {
@@ -839,7 +841,8 @@ function drawHUD(
     /* stats */
     ctx.save();
     ctx.fillStyle = 'rgba(0,0,0,0.4)';
-    roundRect(ctx, 10, 10, 150, 50, 8);
+    const statsHeight = playerData && !playerData.hasBadge ? 70 : 50;
+    roundRect(ctx, 10, 10, 180, statsHeight, 8);
     ctx.fill();
     ctx.fillStyle = '#fff';
     ctx.font = '13px sans-serif';

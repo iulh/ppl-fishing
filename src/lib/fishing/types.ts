@@ -54,6 +54,8 @@ export interface RodUpgrade {
 export interface PlayerData {
     coins: number;
     rodLevel: number;
+    catchesWithoutBadge: number;
+    hasBadge: boolean;
 }
 
 export interface Vec2 {

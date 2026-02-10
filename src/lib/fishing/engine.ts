@@ -12,7 +12,8 @@ import {
     LOOT_TABLE,
     RARITY_WEIGHTS,
     DEFAULT_CONFIG,
-    TOOLTIP_MESSAGES
+    TOOLTIP_MESSAGES,
+    BADGE_PITY_THRESHOLD
 } from './constants';
 import {
     updateBobberFlight,
@@ -29,7 +30,18 @@ function rand(min: number, max: number): number {
     return min + Math.random() * (max - min);
 }
 
-function pickLoot(castPower: number, rodRarityBoost: number = 0): LootItem {
+function pickLoot(
+    castPower: number,
+    rodRarityBoost: number = 0,
+    catchesWithoutBadge: number = 0,
+    hasBadge: boolean = false
+): LootItem {
+    /* Pity system: guarantee fisherman badge after threshold */
+    if (!hasBadge && catchesWithoutBadge >= BADGE_PITY_THRESHOLD) {
+        const badge = LOOT_TABLE.find(i => i.id === 'fisherman_badge');
+        if (badge) return badge;
+    }
+
     /* castPower 0-100 → multiplier for rare+ weights: 1x at 0, up to 4x at 100 */
     const boost = 1 + (castPower / 100) * 3;
     /* rodRarityBoost adds a flat multiplier to rare+ drop rates */
@@ -145,7 +157,8 @@ export function updateGame(
     state: FullGameState,
     input: InputState,
     dt: number,
-    cw: number
+    cw: number,
+    playerData: { catchesWithoutBadge: number; hasBadge: boolean }
 ): FullGameState {
     dt = Math.min(dt, 0.05);
     let s = { ...state };
@@ -173,7 +186,7 @@ export function updateGame(
         case GameState.CASTING:
             return stCasting(s, input, dt);
         case GameState.FLYING:
-            return stFlying(s, dt);
+            return stFlying(s, dt, playerData);
         case GameState.FLOATING:
             return stFloating(s, dt);
         case GameState.BITE:
@@ -242,7 +255,11 @@ function stCasting(s: FullGameState, inp: InputState, dt: number): FullGameState
     return { ...s, castPower: pw, tooltipText: TOOLTIP_MESSAGES.casting };
 }
 
-function stFlying(s: FullGameState, dt: number): FullGameState {
+function stFlying(
+    s: FullGameState,
+    dt: number,
+    playerData: { catchesWithoutBadge: number; hasBadge: boolean }
+): FullGameState {
     const nb = updateBobberFlight(
         s.bobber,
         DEFAULT_CONFIG.gravity,
@@ -265,7 +282,12 @@ function stFlying(s: FullGameState, dt: number): FullGameState {
             gameState: GameState.FLOATING,
             bobber: nb,
             biteTimer: rand(DEFAULT_CONFIG.biteMinTime, DEFAULT_CONFIG.biteMaxTime),
-            currentLoot: pickLoot(s.castPower, s.rodRarityBoost),
+            currentLoot: pickLoot(
+                s.castPower,
+                s.rodRarityBoost,
+                playerData.catchesWithoutBadge,
+                playerData.hasBadge
+            ),
             splashParticles: [...s.splashParticles, ...sp],
             ripples: [
                 ...s.ripples,

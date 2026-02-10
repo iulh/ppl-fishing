@@ -17,7 +17,11 @@ import {
     apiLoadPlayerData,
     apiSavePlayerData
 } from '@/lib/fishing/api';
-import { ROD_UPGRADES } from '@/lib/fishing/constants';
+import {
+    ROD_UPGRADES,
+    BADGE_ESCAPE_PENALTY_MIN,
+    BADGE_ESCAPE_PENALTY_MAX
+} from '@/lib/fishing/constants';
 import Inventory from './Inventory';
 import LootPopup from './LootPopup';
 import EscapedPopup from './EscapedPopup';
@@ -40,13 +44,21 @@ export default function FishingGame() {
     const lastTimeRef = useRef<number>(0);
     const addToInvRef = useRef<(c: CaughtItem) => void>(() => {});
     const rodReductionRef = useRef(0);
+    const playerDataRef = useRef<PlayerData>({
+        coins: 0,
+        rodLevel: 0,
+        catchesWithoutBadge: 0,
+        hasBadge: false
+    });
 
     const [invOpen, setInvOpen] = useState(false);
     const [inventory, setInventory] = useState<InventoryEntry[]>([]);
     const [invLoading, setInvLoading] = useState(true);
     const [playerData, setPlayerData] = useState<PlayerData>({
         coins: 0,
-        rodLevel: 0
+        rodLevel: 0,
+        catchesWithoutBadge: 0,
+        hasBadge: false
     });
     const [displayState, setDisplayState] = useState<GameState>(GameState.IDLE);
     const [lastCatch, setLastCatch] = useState<CaughtItem | null>(null);
@@ -81,6 +93,7 @@ export default function FishingGame() {
     useEffect(() => {
         Promise.all([apiLoadInventory(), apiLoadPlayerData()])
             .then(([entries, pd]) => {
+                console.log('📂 Loading player data from storage:', pd);
                 setInventory(entries);
                 setPlayerData(pd);
             })
@@ -104,8 +117,10 @@ export default function FishingGame() {
         if (invLoading) return;
         if (!playerDataInitDone.current) {
             playerDataInitDone.current = true;
+            console.log('📊 Player data loaded:', playerData);
             return;
         }
+        console.log('💾 Saving player data:', playerData);
         apiSavePlayerData(playerData);
     }, [playerData, invLoading]);
 
@@ -132,7 +147,11 @@ export default function FishingGame() {
         setPlayerData(pd => {
             const nextRod = ROD_UPGRADES[pd.rodLevel + 1];
             if (!nextRod || pd.coins < nextRod.cost) return pd;
-            return { coins: pd.coins - nextRod.cost, rodLevel: pd.rodLevel + 1 };
+            return {
+                ...pd,
+                coins: pd.coins - nextRod.cost,
+                rodLevel: pd.rodLevel + 1
+            };
         });
     }, []);
 
@@ -184,6 +203,11 @@ export default function FishingGame() {
         rodBoostRef.current = rod.rarityBoost;
     }, [playerData.rodLevel]);
 
+    /* ── keep playerData ref in sync ── */
+    useEffect(() => {
+        playerDataRef.current = playerData;
+    }, [playerData]);
+
     /* ── resize canvas to fill viewport ── */
     useEffect(() => {
         const wrap = wrapRef.current;
@@ -224,6 +248,8 @@ export default function FishingGame() {
 
     /* ── game loop (runs once) ── */
     useEffect(() => {
+        console.log('🎮 Game loop started');
+
         function loop(time: number) {
             const canvas = canvasRef.current;
             if (!canvas) return;
@@ -236,6 +262,7 @@ export default function FishingGame() {
                     sizeRef.current.h
                 );
                 lastTimeRef.current = time;
+                console.log('🎲 Game state initialized');
             }
 
             const dt = Math.min((time - lastTimeRef.current) / 1000, 0.1);
@@ -247,7 +274,10 @@ export default function FishingGame() {
             prevState.rodResistanceReduction = rodReductionRef.current;
             prevState.rodRarityBoost = rodBoostRef.current;
             const inp = { ...inputRef.current };
-            const newState = updateGame(prevState, inp, dt, cw);
+            const newState = updateGame(prevState, inp, dt, cw, {
+                catchesWithoutBadge: playerDataRef.current.catchesWithoutBadge,
+                hasBadge: playerDataRef.current.hasBadge
+            });
 
             inputRef.current.justPressed = false;
             inputRef.current.justReleased = false;
@@ -257,26 +287,95 @@ export default function FishingGame() {
                 prevState.gameState !== GameState.CAUGHT &&
                 newState.lastCatch
             ) {
+                console.log('🎣 Caught something!', newState.lastCatch);
                 addToInvRef.current(newState.lastCatch);
                 setLastCatch(newState.lastCatch);
+
+                const caughtItem = newState.lastCatch.item;
+                console.log('📦 Item details:', {
+                    id: caughtItem.id,
+                    name: caughtItem.name,
+                    isFish: caughtItem.isFish
+                });
+
+                // Check if fisherman badge was caught
+                if (caughtItem.id === 'fisherman_badge') {
+                    console.log('🎖️ Fisherman badge caught! Resetting progress.');
+                    setPlayerData(pd => ({
+                        ...pd,
+                        hasBadge: true,
+                        catchesWithoutBadge: 0
+                    }));
+
+                    fetch('/api/v1/users/@me/fisherman-badge', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                        .then(res => res.json())
+                        .then(data => {
+                            console.log('Fisherman badge achievement sent:', data);
+                        })
+                        .catch(err => {
+                            console.error('Failed to send fisherman badge achievement:', err);
+                        });
+                } else if (caughtItem.isFish) {
+                    // Increment catch counter only for fish (not badge, not trash)
+                    setPlayerData(pd => {
+                        const newCount = pd.catchesWithoutBadge + 1;
+                        console.log(`🐟 Fish caught! Progress: ${newCount}/50`);
+                        return {
+                            ...pd,
+                            catchesWithoutBadge: newCount
+                        };
+                    });
+                }
             }
             if (
                 newState.gameState === GameState.ESCAPED &&
                 prevState.gameState !== GameState.ESCAPED
             ) {
+                console.log('💨 Fish escaped!');
+
+                // Check if the escaped item was fisherman badge - penalize progress
+                if (prevState.currentLoot?.id === 'fisherman_badge') {
+                    const range = BADGE_ESCAPE_PENALTY_MAX - BADGE_ESCAPE_PENALTY_MIN + 1;
+                    const penalty = Math.floor(Math.random() * range) + BADGE_ESCAPE_PENALTY_MIN;
+                    setPlayerData(pd => {
+                        const newProgress = Math.max(0, pd.catchesWithoutBadge - penalty);
+                        console.log(
+                            `😱 FISHERMAN BADGE ESCAPED! Progress penalty: -${penalty} (${pd.catchesWithoutBadge} → ${newProgress})`
+                        );
+                        return {
+                            ...pd,
+                            catchesWithoutBadge: newProgress
+                        };
+                    });
+                }
+
                 setLastCatch(null);
             }
             if (
                 newState.gameState === GameState.IDLE &&
                 prevState.gameState !== GameState.IDLE
             ) {
+                console.log('⏸️ Returned to idle state');
                 setLastCatch(null);
+            }
+
+            // Log state transitions
+            if (prevState.gameState !== newState.gameState) {
+                console.log(`🔄 State: ${prevState.gameState} → ${newState.gameState}`);
             }
 
             stateRef.current = newState;
             setDisplayState(newState.gameState);
 
-            render(ctx, newState, cw, ch);
+            render(ctx, newState, cw, ch, {
+                catchesWithoutBadge: playerDataRef.current.catchesWithoutBadge,
+                hasBadge: playerDataRef.current.hasBadge
+            });
             rafRef.current = requestAnimationFrame(loop);
         }
 

@@ -120,6 +120,46 @@ export const LOOT_TABLE: LootItem[] = [
         resistance: 0.08,
         price: 2
     },
+    {
+        id: 'sponge',
+        name: 'Губка Боб',
+        description: 'Живёт он в ананасе на дне океана!',
+        rarity: Rarity.COMMON,
+        emoji: '🧽',
+        isFish: false,
+        resistance: 0.06,
+        price: 3
+    },
+    {
+        id: 'cd_disk',
+        name: 'CD-диск',
+        description: 'На нём написано "Windows XP". Ностальгия...',
+        rarity: Rarity.COMMON,
+        emoji: '💿',
+        isFish: false,
+        resistance: 0.04,
+        price: 2
+    },
+    {
+        id: 'sunglasses',
+        name: 'Солнечные очки',
+        description: 'Deal with it.',
+        rarity: Rarity.COMMON,
+        emoji: '🕶️',
+        isFish: false,
+        resistance: 0.05,
+        price: 2
+    },
+    {
+        id: 'anchor',
+        name: 'Якорь',
+        description: 'Чей-то корабль потерял якорь. Может, пиратский?',
+        rarity: Rarity.COMMON,
+        emoji: '⚓',
+        isFish: false,
+        resistance: 0.12,
+        price: 5
+    },
 
     // Uncommon
     {
@@ -206,6 +246,56 @@ export const LOOT_TABLE: LootItem[] = [
         isFish: false,
         resistance: 0.07,
         price: 6
+    },
+    {
+        id: 'pepe_frog',
+        name: 'Лягушка Пепе',
+        description: 'Feels good man. Зелёная лягушка с улыбкой.',
+        rarity: Rarity.UNCOMMON,
+        emoji: '🐸',
+        isFish: false,
+        resistance: 0.25,
+        price: 20
+    },
+    {
+        id: 'amogus',
+        name: 'Амогус',
+        description: 'Sus! Красный выглядит подозрительно...',
+        rarity: Rarity.UNCOMMON,
+        emoji: '🔴',
+        isFish: false,
+        resistance: 0.18,
+        price: 15
+    },
+    {
+        id: 'gopnik_cap',
+        name: 'Кепка гопника',
+        description: 'Адидас. Три полоски. Респект.',
+        rarity: Rarity.UNCOMMON,
+        emoji: '🧢',
+        isFish: false,
+        resistance: 0.1,
+        price: 10
+    },
+    {
+        id: 'keyboard',
+        name: 'Клавиатура',
+        description: 'Механическая клавиатура. Кто-то разозлился в доте?',
+        rarity: Rarity.UNCOMMON,
+        emoji: '⌨️',
+        isFish: false,
+        resistance: 0.15,
+        price: 12
+    },
+    {
+        id: 'headphones',
+        name: 'Наушники',
+        description: 'AirPods. Провода — прошлый век.',
+        rarity: Rarity.UNCOMMON,
+        emoji: '🎧',
+        isFish: false,
+        resistance: 0.08,
+        price: 11
     },
 
     // Rare
@@ -294,6 +384,36 @@ export const LOOT_TABLE: LootItem[] = [
         resistance: 0.65,
         price: 70
     },
+    {
+        id: 'doshik',
+        name: 'Доширак',
+        description: 'Еда студента. Просрочен на 3 года, но всё ещё пригоден.',
+        rarity: Rarity.RARE,
+        emoji: '🍜',
+        isFish: false,
+        resistance: 0.2,
+        price: 45
+    },
+    {
+        id: 'balalaika',
+        name: 'Балалайка',
+        description: 'Русский музыкальный инструмент. Играет сама по себе.',
+        rarity: Rarity.RARE,
+        emoji: '🎸',
+        isFish: false,
+        resistance: 0.25,
+        price: 50
+    },
+    {
+        id: 'gopnik_seeds',
+        name: 'Семечки',
+        description: 'Пакет семечек "Бабкины". Классика районов.',
+        rarity: Rarity.RARE,
+        emoji: '🌻',
+        isFish: false,
+        resistance: 0.15,
+        price: 40
+    },
 
     // Epic
     {
@@ -358,6 +478,26 @@ export const LOOT_TABLE: LootItem[] = [
         weight: { min: 0.1, max: 0.5 },
         resistance: 0.6,
         price: 160
+    },
+    {
+        id: 'matryoshka',
+        name: 'Матрёшка',
+        description: 'Русская матрёшка. Внутри ещё одна. И ещё одна. И ещё...',
+        rarity: Rarity.EPIC,
+        emoji: '🪆',
+        isFish: false,
+        resistance: 0.45,
+        price: 170
+    },
+    {
+        id: 'gaming_chair',
+        name: 'Геймерское кресло',
+        description: '+100 к скиллу. Теперь ты про игрок!',
+        rarity: Rarity.EPIC,
+        emoji: '🪑',
+        isFish: false,
+        resistance: 0.6,
+        price: 185
     },
 
     // Legendary
@@ -425,6 +565,48 @@ export const LOOT_TABLE: LootItem[] = [
         isFish: false,
         resistance: 0.95,
         price: 1000
+    },
+    {
+        id: 'pepe_king',
+        name: 'Король Пепе',
+        description: 'Легендарная лягушка в короне. Правитель всех мемов.',
+        rarity: Rarity.LEGENDARY,
+        emoji: '👑',
+        isFish: false,
+        resistance: 0.8,
+        price: 666
+    },
+    {
+        id: 'russian_bear',
+        name: 'Русский медведь',
+        description: 'На медведе, с балалайкой. Стереотип? Нет, это Россия!',
+        rarity: Rarity.LEGENDARY,
+        emoji: '🐻',
+        isFish: true,
+        weight: { min: 200.0, max: 400.0 },
+        resistance: 0.9,
+        price: 888
+    },
+    {
+        id: 'golden_semechki',
+        name: 'Золотые семечки',
+        description: 'Легендарные семечки из чистого золота. Щёлк!',
+        rarity: Rarity.LEGENDARY,
+        emoji: '✨',
+        isFish: false,
+        resistance: 0.7,
+        price: 555
+    },
+    {
+        id: 'cyberpunk_fish',
+        name: 'Киберпанк рыба 2077',
+        description: 'Рыба из будущего с имплантами. Всё ещё багованная.',
+        rarity: Rarity.LEGENDARY,
+        emoji: '🤖',
+        isFish: true,
+        weight: { min: 5.0, max: 15.0 },
+        resistance: 0.88,
+        price: 999
     }
 ];
 
@@ -448,6 +630,13 @@ export const DEFAULT_CONFIG: GameConfig = {
     tensionIncreaseRate: 40,
     fishResistanceInterval: 1.5
 };
+
+/* Number of fish catches needed to guarantee fisherman badge */
+export const BADGE_PITY_THRESHOLD = 20;
+
+/* Penalty range when fisherman badge escapes */
+export const BADGE_ESCAPE_PENALTY_MIN = 5;
+export const BADGE_ESCAPE_PENALTY_MAX = 15;
 
 export const TOOLTIP_MESSAGES: Record<string, string> = {
     idle: 'Нажмите ПРОБЕЛ или ЛКМ для заброса',

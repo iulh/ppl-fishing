@@ -37,11 +37,20 @@ function saveToStorage(entries: InventoryEntry[]): void {
 function loadPlayerData(): PlayerData {
     try {
         const raw = localStorage.getItem(PLAYER_KEY);
-        if (raw) return JSON.parse(raw);
+        if (raw) {
+            const data = JSON.parse(raw);
+            // Ensure new fields exist with defaults
+            return {
+                coins: data.coins ?? 0,
+                rodLevel: data.rodLevel ?? 0,
+                catchesWithoutBadge: data.catchesWithoutBadge ?? 0,
+                hasBadge: data.hasBadge ?? false
+            };
+        }
     } catch (e) {
         console.warn('fishing: player data parse error', e);
     }
-    return { coins: 0, rodLevel: 0 };
+    return { coins: 0, rodLevel: 0, catchesWithoutBadge: 0, hasBadge: false };
 }
 
 function savePlayerData(data: PlayerData): void {
