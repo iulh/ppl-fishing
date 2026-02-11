@@ -56,6 +56,7 @@ export interface PlayerData {
     rodLevel: number;
     catchesWithoutBadge: number;
     hasBadge: boolean;
+    pendingBadgeAchievement: boolean;
 }
 
 export interface Vec2 {

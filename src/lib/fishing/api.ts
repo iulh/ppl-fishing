@@ -44,13 +44,20 @@ function loadPlayerData(): PlayerData {
                 coins: data.coins ?? 0,
                 rodLevel: data.rodLevel ?? 0,
                 catchesWithoutBadge: data.catchesWithoutBadge ?? 0,
-                hasBadge: data.hasBadge ?? false
+                hasBadge: data.hasBadge ?? false,
+                pendingBadgeAchievement: data.pendingBadgeAchievement ?? false
             };
         }
     } catch (e) {
         console.warn('fishing: player data parse error', e);
     }
-    return { coins: 0, rodLevel: 0, catchesWithoutBadge: 0, hasBadge: false };
+    return {
+        coins: 0,
+        rodLevel: 0,
+        catchesWithoutBadge: 0,
+        hasBadge: false,
+        pendingBadgeAchievement: false
+    };
 }
 
 function savePlayerData(data: PlayerData): void {

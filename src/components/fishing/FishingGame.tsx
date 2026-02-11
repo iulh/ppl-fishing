@@ -48,7 +48,8 @@ export default function FishingGame() {
         coins: 0,
         rodLevel: 0,
         catchesWithoutBadge: 0,
-        hasBadge: false
+        hasBadge: false,
+        pendingBadgeAchievement: false
     });
 
     const [invOpen, setInvOpen] = useState(false);
@@ -58,10 +59,35 @@ export default function FishingGame() {
         coins: 0,
         rodLevel: 0,
         catchesWithoutBadge: 0,
-        hasBadge: false
+        hasBadge: false,
+        pendingBadgeAchievement: false
     });
     const [displayState, setDisplayState] = useState<GameState>(GameState.IDLE);
     const [lastCatch, setLastCatch] = useState<CaughtItem | null>(null);
+
+    /* ── send badge achievement to API ── */
+    const sendBadgeAchievement = useCallback(async (): Promise<boolean> => {
+        try {
+            console.log('📤 Attempting to send fisherman badge achievement...');
+            const res = await fetch('/api/v1/users/@me/fisherman-badge', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!res.ok) {
+                throw new Error(`HTTP ${res.status}`);
+            }
+
+            const data = await res.json();
+            console.log('✅ Fisherman badge achievement sent successfully:', data);
+            return true;
+        } catch (err) {
+            console.error('❌ Failed to send fisherman badge achievement:', err);
+            return false;
+        }
+    }, []);
 
     /* ── inventory management ── */
     const addToInventory = useCallback((c: CaughtItem) => {
@@ -300,27 +326,15 @@ export default function FishingGame() {
 
                 // Check if fisherman badge was caught
                 if (caughtItem.id === 'fisherman_badge') {
-                    console.log('🎖️ Fisherman badge caught! Resetting progress.');
+                    console.log('🎖️ Fisherman badge caught! Resetting progress and marking for achievement.');
                     setPlayerData(pd => ({
                         ...pd,
                         hasBadge: true,
-                        catchesWithoutBadge: 0
+                        catchesWithoutBadge: 0,
+                        pendingBadgeAchievement: true
                     }));
-
-                    fetch('/api/v1/users/@me/fisherman-badge', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                        .then(res => res.json())
-                        .then(data => {
-                            console.log('Fisherman badge achievement sent:', data);
-                        })
-                        .catch(err => {
-                            console.error('Failed to send fisherman badge achievement:', err);
-                        });
-                } else {
+                } else if (caughtItem.isFish) {
+                    // Increment catch counter only for fish (not badge, not trash)
                     setPlayerData(pd => {
                         const newCount = pd.catchesWithoutBadge + 1;
                         console.log(`🐟 Fish caught! Progress: ${newCount}/50`);
@@ -328,6 +342,19 @@ export default function FishingGame() {
                             ...pd,
                             catchesWithoutBadge: newCount
                         };
+                    });
+                }
+
+                // Try to send pending badge achievement on every catch
+                if (playerDataRef.current.pendingBadgeAchievement) {
+                    console.log('🔄 Attempting to send pending badge achievement...');
+                    sendBadgeAchievement().then(success => {
+                        if (success) {
+                            setPlayerData(pd => ({
+                                ...pd,
+                                pendingBadgeAchievement: false
+                            }));
+                        }
                     });
                 }
             }
