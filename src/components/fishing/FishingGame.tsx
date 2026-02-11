@@ -68,7 +68,6 @@ export default function FishingGame() {
     /* ── send badge achievement to API ── */
     const sendBadgeAchievement = useCallback(async (): Promise<boolean> => {
         try {
-            console.log('📤 Attempting to send fisherman badge achievement...');
             const res = await fetch('/api/v1/users/@me/fisherman-badge', {
                 method: 'POST',
                 headers: {
@@ -81,10 +80,10 @@ export default function FishingGame() {
             }
 
             const data = await res.json();
-            console.log('✅ Fisherman badge achievement sent successfully:', data);
+            console.log('✅ Badge achievement sent:', data);
             return true;
         } catch (err) {
-            console.error('❌ Failed to send fisherman badge achievement:', err);
+            console.error('❌ Failed to send badge achievement:', err);
             return false;
         }
     }, []);
@@ -274,8 +273,6 @@ export default function FishingGame() {
 
     /* ── game loop (runs once) ── */
     useEffect(() => {
-        console.log('🎮 Game loop started');
-
         function loop(time: number) {
             const canvas = canvasRef.current;
             if (!canvas) return;
@@ -288,7 +285,6 @@ export default function FishingGame() {
                     sizeRef.current.h
                 );
                 lastTimeRef.current = time;
-                console.log('🎲 Game state initialized');
             }
 
             const dt = Math.min((time - lastTimeRef.current) / 1000, 0.1);
@@ -313,28 +309,42 @@ export default function FishingGame() {
                 prevState.gameState !== GameState.CAUGHT &&
                 newState.lastCatch
             ) {
-                console.log('🎣 Caught something!', newState.lastCatch);
                 addToInvRef.current(newState.lastCatch);
                 setLastCatch(newState.lastCatch);
 
                 const caughtItem = newState.lastCatch.item;
-                console.log('📦 Item details:', {
-                    id: caughtItem.id,
-                    name: caughtItem.name,
-                    isFish: caughtItem.isFish
-                });
 
                 // Check if fisherman badge was caught
                 if (caughtItem.id === 'fisherman_badge') {
-                    console.log('🎖️ Fisherman badge caught! Resetting progress and marking for achievement.');
+                    console.log('🎖️ Fisherman badge caught!');
                     setPlayerData(pd => ({
                         ...pd,
                         hasBadge: true,
-                        catchesWithoutBadge: 0,
-                        pendingBadgeAchievement: true
+                        catchesWithoutBadge: 0
                     }));
-                } else if (caughtItem.isFish) {
-                    // Increment catch counter only for fish (not badge, not trash)
+
+                    // Try to send achievement immediately
+                    sendBadgeAchievement().then(success => {
+                        if (!success) {
+                            setPlayerData(pd => ({
+                                ...pd,
+                                pendingBadgeAchievement: true
+                            }));
+                        }
+                    });
+                } else {
+                    // For any other catch, try to send pending badge achievement
+                    if (playerDataRef.current.pendingBadgeAchievement) {
+                        sendBadgeAchievement().then(success => {
+                            if (success) {
+                                setPlayerData(pd => ({
+                                    ...pd,
+                                    pendingBadgeAchievement: false
+                                }));
+                            }
+                        });
+                    }
+
                     setPlayerData(pd => {
                         const newCount = pd.catchesWithoutBadge + 1;
                         console.log(`🐟 Fish caught! Progress: ${newCount}/50`);
@@ -344,32 +354,22 @@ export default function FishingGame() {
                         };
                     });
                 }
-
-                // Try to send pending badge achievement on every catch
-                if (playerDataRef.current.pendingBadgeAchievement) {
-                    console.log('🔄 Attempting to send pending badge achievement...');
-                    sendBadgeAchievement().then(success => {
-                        if (success) {
-                            setPlayerData(pd => ({
-                                ...pd,
-                                pendingBadgeAchievement: false
-                            }));
-                        }
-                    });
-                }
             }
             if (
                 newState.gameState === GameState.ESCAPED &&
                 prevState.gameState !== GameState.ESCAPED
             ) {
-                console.log('💨 Fish escaped!');
-
                 // Check if the escaped item was fisherman badge - penalize progress
                 if (prevState.currentLoot?.id === 'fisherman_badge') {
-                    const range = BADGE_ESCAPE_PENALTY_MAX - BADGE_ESCAPE_PENALTY_MIN + 1;
-                    const penalty = Math.floor(Math.random() * range) + BADGE_ESCAPE_PENALTY_MIN;
+                    const range =
+                        BADGE_ESCAPE_PENALTY_MAX - BADGE_ESCAPE_PENALTY_MIN + 1;
+                    const penalty =
+                        Math.floor(Math.random() * range) + BADGE_ESCAPE_PENALTY_MIN;
                     setPlayerData(pd => {
-                        const newProgress = Math.max(0, pd.catchesWithoutBadge - penalty);
+                        const newProgress = Math.max(
+                            0,
+                            pd.catchesWithoutBadge - penalty
+                        );
                         console.log(
                             `😱 FISHERMAN BADGE ESCAPED! Progress penalty: -${penalty} (${pd.catchesWithoutBadge} → ${newProgress})`
                         );
@@ -386,13 +386,7 @@ export default function FishingGame() {
                 newState.gameState === GameState.IDLE &&
                 prevState.gameState !== GameState.IDLE
             ) {
-                console.log('⏸️ Returned to idle state');
                 setLastCatch(null);
-            }
-
-            // Log state transitions
-            if (prevState.gameState !== newState.gameState) {
-                console.log(`🔄 State: ${prevState.gameState} → ${newState.gameState}`);
             }
 
             stateRef.current = newState;

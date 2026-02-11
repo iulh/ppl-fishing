@@ -268,16 +268,6 @@ export const LOOT_TABLE: LootItem[] = [
         price: 15
     },
     {
-        id: 'gopnik_cap',
-        name: 'Кепка гопника',
-        description: 'Адидас. Три полоски. Респект.',
-        rarity: Rarity.UNCOMMON,
-        emoji: '🧢',
-        isFish: false,
-        resistance: 0.1,
-        price: 10
-    },
-    {
         id: 'keyboard',
         name: 'Клавиатура',
         description: 'Механическая клавиатура. Кто-то разозлился в доте?',
@@ -478,16 +468,6 @@ export const LOOT_TABLE: LootItem[] = [
         weight: { min: 0.1, max: 0.5 },
         resistance: 0.6,
         price: 160
-    },
-    {
-        id: 'matryoshka',
-        name: 'Матрёшка',
-        description: 'Русская матрёшка. Внутри ещё одна. И ещё одна. И ещё...',
-        rarity: Rarity.EPIC,
-        emoji: '🪆',
-        isFish: false,
-        resistance: 0.45,
-        price: 170
     },
     {
         id: 'gaming_chair',
