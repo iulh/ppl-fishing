@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { InventoryEntry, PlayerData } from '@/lib/fishing/types';
+import { InventoryEntry, PlayerData, UnobtainedInventoryEntry } from '@/lib/fishing/types';
 import {
     RARITY_COLORS,
     RARITY_NAMES,
@@ -11,7 +11,33 @@ import {
 import ReactCSSTransition from '@/components/CSSTransition';
 import styles from '@/styles/fishing/Inventory.module.css';
 
-interface Props {
+interface TabProps {
+    entry: Partial<InventoryEntry> & UnobtainedInventoryEntry
+    isSelected?: boolean;
+    onClick?: () => void;
+}
+
+function InventoryTab({entry, isSelected, onClick}: TabProps) {
+    const {item, count} = entry
+
+    return <div
+        className={`${styles.invItem} ${isSelected ? styles.invItemSelected : ''}`}
+        style={{
+            background: RARITY_BG[item.rarity],
+            borderColor:
+                RARITY_COLORS[item.rarity] + '44'
+        }}
+        title={item.name}
+        onClick={onClick}
+    >
+        {item.emoji}
+        {count != 1 ? (
+            <span className={styles.invCount}>{count}</span>
+        ) : <></>}
+    </div>
+}
+
+interface InventoryProps {
     open: boolean;
     entries: InventoryEntry[];
     loading?: boolean;
@@ -29,7 +55,7 @@ export default function Inventory({
     onClose,
     onSell,
     onUpgradeRod
-}: Props) {
+}: InventoryProps) {
     const [selectedId, setSelectedId] = useState<string | null>(null);
     const [tab, setTab] = useState<'inv' | 'rod'>('inv');
 
@@ -77,34 +103,15 @@ export default function Inventory({
                 <>
                     {loading ? (
                         <div className={styles.invEmpty}>Загрузка улова...</div>
-                    ) : entries.length === 0 ? (
-                        <div className={styles.invEmpty}>Пока ничего не поймано</div>
                     ) : (
                         <div className={styles.invGrid}>
-                            {entries.map(e => (
-                                <div
-                                    key={e.item.id}
-                                    className={`${styles.invItem} ${selected?.item.id === e.item.id ? styles.invItemSelected : ''}`}
-                                    style={{
-                                        background: RARITY_BG[e.item.rarity],
-                                        borderColor:
-                                            RARITY_COLORS[e.item.rarity] + '44'
-                                    }}
-                                    title={e.item.name}
-                                    onClick={() => setSelectedId(e.item.id)}
-                                >
-                                    {e.item.emoji}
-                                    {e.count > 1 && (
-                                        <span className={styles.invCount}>
-                                            ×{e.count}
-                                        </span>
-                                    )}
-                                </div>
-                            ))}
+                            
+                            {(entries.length === 0) ? entries.map(e => 
+                                <InventoryTab key={e.item.id} entry={e} isSelected={selected?.item.id === e.item.id} onClick={() => setSelectedId(e.item.id)} />) : <></>}
                         </div>
                     )}
 
-                    {selected && (
+                    {selected != undefined ? (
                         <div className={styles.itemDetail}>
                             <div
                                 className={styles.itemDetailName}
@@ -157,7 +164,7 @@ export default function Inventory({
                                 )}
                             </div>
                         </div>
-                    )}
+                    ) : <></>}
                 </>
             ) : (
                 <div className={styles.rodPanel}>

@@ -35,12 +35,15 @@ export interface CaughtItem {
     timestamp: number;
 }
 
-export interface InventoryEntry {
+export interface UnobtainedInventoryEntry {
     item: LootItem;
+}
+
+export type InventoryEntry = {
     count: number;
     lastCaught: number;
     maxWeight: number;
-}
+} & UnobtainedInventoryEntry
 
 export interface RodUpgrade {
     level: number;
