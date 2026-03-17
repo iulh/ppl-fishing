@@ -612,7 +612,7 @@ export const DEFAULT_CONFIG: GameConfig = {
 };
 
 /* Number of fish catches needed to guarantee fisherman badge */
-export const BADGE_PITY_THRESHOLD = 50;
+export const BADGE_PITY_THRESHOLD = 20;
 
 /* Penalty range when fisherman badge escapes */
 export const BADGE_ESCAPE_PENALTY_MIN = 5;
