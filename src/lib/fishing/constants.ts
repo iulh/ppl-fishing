@@ -219,12 +219,12 @@ export const LOOT_TABLE: LootItem[] = [
     {
         id: 'rubber_duck',
         name: 'Резиновая уточка',
-        description: 'Кря! Кто-то по ней скучает.',
+        description: 'Если что-то ходит как утка, плавает как утка и крякает как утка, то, скорее всего, это утка',
         rarity: Rarity.UNCOMMON,
         emoji: '🦆',
         isFish: false,
         resistance: 0.08,
-        price: 7
+        price: 8
     },
     {
         id: 'bream',
