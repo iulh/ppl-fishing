@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/fishing',
+  basePath: '',
   reactStrictMode: false,
 };
 

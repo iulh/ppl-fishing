@@ -5,10 +5,10 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-    title: 'РЫБАЛКА · Повязки Pepeland',
-    description: 'Рыбалка и магазин макарон',
+    title: 'РЫБАЛКА 2077',
+    description: 'Рыбалка без магазина макарон',
     icons: {
-        icon: '/static/icons/icon.svg',
+        icon: '/static/icons/icon.svg', // ugly: andcoolsystems забыл папку "static"
         shortcut: '/static/icons/icon.svg',
         apple: '/static/icons/icon.svg'
     }
