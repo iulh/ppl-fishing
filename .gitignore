@@ -1,10 +1,9 @@
 /.next
+next-env.d.ts
+
 /.vscode
 /node_modules
 
 # Environment variables
 .env.local
 .env*.local
-
-/.claude
-/next-env.d.ts
