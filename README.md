@@ -1,7 +1,9 @@
 # Fishing Game
 
 Полностью изолированная мини-игра рыбалки из проекта PPLBandage.
-123
+
+<img src="./assets/andcool-quote.png"></img>
+
 ## Разработка
 
 ```bash
