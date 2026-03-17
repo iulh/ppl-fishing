@@ -105,8 +105,7 @@ export default function Inventory({
                         <div className={styles.invEmpty}>Загрузка улова...</div>
                     ) : (
                         <div className={styles.invGrid}>
-                            
-                            {(entries.length === 0) ? entries.map(e => 
+                            {(entries.length > 0) ? entries.map(e => 
                                 <InventoryTab key={e.item.id} entry={e} isSelected={selected?.item.id === e.item.id} onClick={() => setSelectedId(e.item.id)} />) : <></>}
                         </div>
                     )}
@@ -137,7 +136,7 @@ export default function Inventory({
                                     Макс. вес: {selected.maxWeight} кг
                                 </div>
                             )}
-                            <div className={styles.sellRow}>
+                            {(selected.count > 0 ? <div className={styles.sellRow}>
                                 <span className={styles.sellPrice}>
                                     💰 {selected.item.price} за шт.
                                 </span>
@@ -162,7 +161,7 @@ export default function Inventory({
                                         💰)
                                     </button>
                                 )}
-                            </div>
+                            </div> : <></>)}
                         </div>
                     ) : <></>}
                 </>
