@@ -150,20 +150,20 @@ export default function FishingGame() {
     }, [playerData, invLoading]);
 
     /* ── sell items ── */
-    const handleSell = useCallback((itemId: string, count: number) => {
-        setInventory(prev => {
-            const idx = prev.findIndex(e => e.item.id === itemId);
-            if (idx < 0) return prev;
-            const entry = prev[idx];
-            const sellCount = Math.min(count, entry.count);
-            const earned = sellCount * entry.item.price;
-            setPlayerData(pd => ({ ...pd, coins: pd.coins + earned }));
-            if (entry.count <= sellCount) {
-                return prev.filter((_, i) => i !== idx);
+    const handleSell = useCallback((itemId: string, sellCount: number) => {
+        setInventory(inv => {
+            const idx = inv.findIndex(e => e.item.id === itemId);
+            if (idx < 0) return inv;
+
+            const entry = inv[idx];
+            if (entry?.count >= sellCount) {
+                entry.count -= sellCount
+
+                const earned = sellCount * entry.item.price;
+                setPlayerData(pd => ({ ...pd, coins: pd.coins + earned }));
             }
-            const copy = [...prev];
-            copy[idx] = { ...copy[idx], count: copy[idx].count - sellCount };
-            return copy;
+
+            return inv;
         });
     }, []);
 
